@@ -1,0 +1,126 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip>
+
+struct Transformer {
+    int id;
+    std::string location;
+    double capacity; // kVA
+    std::string status; // "Operational", "Maintenance", "Faulty"
+    double currentLoad; // kVA
+};
+
+void addTransformer(std::vector<Transformer>& transformers) {
+    Transformer newTransformer;
+    std::cout << "Enter Transformer ID: ";
+    std::cin >> newTransformer.id;
+    std::cout << "Enter Location: ";
+    std::cin.ignore(); // Consume newline left by previous cin
+    std::getline(std::cin, newTransformer.location);
+    std::cout << "Enter Capacity (kVA): ";
+    std::cin >> newTransformer.capacity;
+    std::cout << "Enter Status (Operational, Maintenance, Faulty): ";
+    std::cin.ignore();
+    std::getline(std::cin, newTransformer.status);
+    newTransformer.currentLoad = 0.0; // Initialize load
+    transformers.push_back(newTransformer);
+    std::cout << "Transformer added successfully!\n";
+}
+
+void displayTransformers(const std::vector<Transformer>& transformers) {
+    if (transformers.empty()) {
+        std::cout << "No transformers found.\n";
+        return;
+    }
+
+    std::cout << std::left << std::setw(5) << "ID"
+              << std::setw(20) << "Location"
+              << std::setw(10) << "Capacity"
+              << std::setw(15) << "Status"
+              << std::setw(15) << "Current Load" << std::endl;
+    std::cout << "------------------------------------------------------------------\n";
+
+    for (const auto& transformer : transformers) {
+        std::cout << std::left << std::setw(5) << transformer.id
+                  << std::setw(20) << transformer.location
+                  << std::setw(10) << transformer.capacity
+                  << std::setw(15) << transformer.status
+                  << std::setw(15) << transformer.currentLoad << std::endl;
+    }
+}
+
+void updateTransformerLoad(std::vector<Transformer>& transformers) {
+    int id;
+    double load;
+    std::cout << "Enter Transformer ID to update load: ";
+    std::cin >> id;
+
+    for (auto& transformer : transformers) {
+        if (transformer.id == id) {
+            std::cout << "Enter current load (kVA): ";
+            std::cin >> load;
+            transformer.currentLoad = load;
+            std::cout << "Load updated successfully!\n";
+            return;
+        }
+    }
+    std::cout << "Transformer ID not found.\n";
+}
+
+void updateTransformerStatus(std::vector<Transformer>& transformers) {
+    int id;
+    std::string status;
+    std::cout << "Enter Transformer ID to update status: ";
+    std::cin >> id;
+
+    for (auto& transformer : transformers) {
+        if (transformer.id == id) {
+            std::cout << "Enter new status (Operational, Maintenance, Faulty): ";
+            std::cin.ignore();
+            std::getline(std::cin, status);
+            transformer.status = status;
+            std::cout << "Status updated successfully!\n";
+            return;
+        }
+    }
+    std::cout << "Transformer ID not found.\n";
+}
+
+int main() {
+    std::vector<Transformer> transformers;
+    int choice;
+
+    do {
+        std::cout << "\nTransformer Management System\n";
+        std::cout << "1. Add Transformer\n";
+        std::cout << "2. Display Transformers\n";
+        std::cout << "3. Update Transformer Load\n";
+        std::cout << "4. Update Transformer Status\n";
+        std::cout << "5. Exit\n";
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addTransformer(transformers);
+                break;
+            case 2:
+                displayTransformers(transformers);
+                break;
+            case 3:
+                updateTransformerLoad(transformers);
+                break;
+            case 4:
+                updateTransformerStatus(transformers);
+                break;
+            case 5:
+                std::cout << "Exiting...\n";
+                break;
+            default:
+                std::cout << "Invalid choice. Try again.\n";
+        }
+    } while (choice != 5);
+
+    return 0;
+}
